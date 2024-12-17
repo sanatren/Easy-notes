@@ -3,145 +3,232 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>easy-peasy Notes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Easy-Peasy Notes</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        body {
+            background-color: #f9fafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background-color: #3f51b5;
+        }
+        .navbar-brand, .nav-link, .navbar-toggler-icon {
+            color: #fff !important;
+        }
+        .form-control:focus {
+            border-color: #3f51b5;
+            box-shadow: none;
+        }
+        .btn-primary {
+            background-color: #3f51b5;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #303f9f;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
         .smart-compose-suggestion {
             color: #999;
             position: absolute;
             pointer-events: none;
             font-style: italic;
+            width: 100%;
+        }
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">easy-peasy</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                </ul>
-            </div>
+            <a class="navbar-brand" href="#"><i class="fas fa-sticky-note"></i> Easy-Peasy Notes</a>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1>Create your easy-peasy note</h1>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Create New Note Form -->
+    <div class="container">
+        <h2><i class="fas fa-plus-circle"></i> Create a New Note</h2>
         <form action="/" method="post">
             <div class="mb-3">
-                <label for="title" class="form-label">Enter title</label>
-                <input type="text" class="form-control" id="title" name="Title" required>
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="Title" placeholder="Enter note title" required>
             </div>
             <div class="mb-3">
                 <label for="desc" class="form-label">Description</label>
-                <input type="text" class="form-control" id="desc" name="description" required>
+                <input type="text" class="form-control" id="desc" name="description" placeholder="Brief description" required>
             </div>
             <div class="mb-3 position-relative">
                 <label for="content" class="form-label">Content</label>
-                <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+                <textarea class="form-control" id="content" name="content" rows="4" placeholder="Write your note here..." required></textarea>
                 <div id="smart-compose-suggestion" class="smart-compose-suggestion"></div>
             </div>
             <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" name="important" id="important">
-                <label class="form-check-label" for="important">Important</label>
+                <label class="form-check-label" for="important">Mark as Important</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-save"></i> Save Note</button>
         </form>
     </div>
 
-    <div class="container mt-4">
-        <h1>Saved Notes</h1>
-        {% if newDocs %}
+    <!-- Saved Notes -->
+    <div class="container mt-5">
+        <h2><i class="fas fa-book"></i> Your Notes</h2>
+        <div class="row">
             {% for item in newDocs %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">{{ item.title }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ item.description }}</h6>
-                    <p class="card-text">{{ item.content }}</p>
-                    {% if item.important %}
-                    <span class="badge bg-danger">Important</span>
-                    {% endif %}
-                    <button class="btn btn-warning btn-sm mt-2" onclick="showUpdateForm('{{ item.id }}')">Update</button>
-                    <button class="btn btn-danger btn-sm mt-2" onclick="deleteNote('{{ item.id }}')">Delete</button>
-                    <form id="updateForm-{{ item.id }}" style="display: none;" onsubmit="updateNote('{{ item.id }}', event)" class="mt-3">
-                        <div class="mb-3">
-                            <input type="text" class="form-control" name="Title" value="{{ item.title }}" required>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ item.description }}</h6>
+                        <p class="card-text">{{ item.content }}</p>
+                        {% if item.important %}
+                        <span class="badge bg-danger mb-2"><i class="fas fa-exclamation-circle"></i> Important</span>
+                        {% endif %}
+                        <div class="mt-auto">
+                            <button class="btn btn-sm btn-outline-primary me-2" onclick="showUpdateForm('{{ item.id }}')"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteNote('{{ item.id }}')"><i class="fas fa-trash-alt"></i> Delete</button>
                         </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control" name="description" value="{{ item.description }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <textarea class="form-control" name="content" required>{{ item.content }}</textarea>
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" name="important" id="important-{{ item.id }}" {% if item.important %}checked{% endif %}>
-                            <label class="form-check-label" for="important-{{ item.id }}">Important</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
-                    </form>
+                        <!-- Update Form -->
+                        <form id="updateForm-{{ item.id }}" style="display: none;" onsubmit="updateNote('{{ item.id }}', event)" class="mt-3">
+                            <div class="mb-2">
+                                <input type="text" class="form-control" name="Title" value="{{ item.title }}" required>
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" name="description" value="{{ item.description }}" required>
+                            </div>
+                            <div class="mb-2">
+                                <textarea class="form-control" name="content" rows="3" required>{{ item.content }}</textarea>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input type="checkbox" class="form-check-input" name="important" id="important-{{ item.id }}" {% if item.important %}checked{% endif %}>
+                                <label class="form-check-label" for="important-{{ item.id }}">Mark as Important</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Save Changes</button>
+                        </form>
+                    </div>
                 </div>
             </div>
             {% endfor %}
-        {% else %}
-            <p>No saved notes present</p>
-        {% endif %}
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
+        const spinner = document.getElementById('loading-spinner');
+        const contentTextarea = document.getElementById('content');
+        const suggestionElement = document.getElementById('smart-compose-suggestion');
+        let predictedText = '';
+
+        function toggleSpinner(show) {
+            spinner.style.display = show ? 'block' : 'none';
+        }
+
+        async function predictNextWords() {
+            const content = contentTextarea.value;
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, next_words: 3 }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    predictedText = data.predicted_words.join(' ');
+                    suggestionElement.textContent = predictedText;
+                }
+            } catch (error) {
+                console.error('Error in predictNextWords:', error);
+            }
+        }
+
+        function insertPredictionAtCursor() {
+            const start = contentTextarea.selectionStart;
+            const end = contentTextarea.selectionEnd;
+            const currentValue = contentTextarea.value;
+
+            contentTextarea.value =
+                currentValue.substring(0, start) +
+                predictedText +
+                currentValue.substring(end);
+
+            contentTextarea.selectionStart = contentTextarea.selectionEnd = start + predictedText.length;
+
+            suggestionElement.textContent = '';
+            predictedText = '';
+        }
+
+        contentTextarea.addEventListener('input', predictNextWords);
+        contentTextarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab' && predictedText) {
+                e.preventDefault();
+                insertPredictionAtCursor();
+            }
+        });
+
         function showUpdateForm(id) {
-            document.getElementById(`updateForm-${id}`).style.display = 'block';
+            const form = document.getElementById('updateForm-' + id);
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
 
         async function updateNote(id, event) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
+            event.preventDefault();
+            toggleSpinner(true);
 
-    // Create a plain object from formData
-    const note = {
-        Title: formData.get('Title'),
-        description: formData.get('description'),
-        content: formData.get('content'),
-        important: formData.get('important') === 'on'
-    };
+            const form = event.target;
+            const formData = new FormData(form);
 
-    try {
-        const response = await fetch(`/update/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(note),
-        });
-        if (response.ok) {
-            alert('Note updated successfully');
-            location.reload();
-        } else {
-            alert('Failed to update note');
+            const note = {
+                Title: formData.get('Title'),
+                description: formData.get('description'),
+                content: formData.get('content'),
+                important: formData.get('important') === 'on'
+            };
+
+            try {
+                const response = await fetch(`/update/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(note)
+                });
+                if (response.ok) {
+                    alert('Note updated successfully');
+                    location.reload();
+                } else {
+                    alert('Failed to update note');
+                }
+            } catch (error) {
+                alert('Error updating note');
+            } finally {
+                toggleSpinner(false);
+            }
         }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while updating the note');
-    }
-}
-
 
         async function deleteNote(id) {
             if (confirm('Are you sure you want to delete this note?')) {
+                toggleSpinner(true);
                 try {
-                    const response = await fetch(`/delete/${id}`, {
-                        method: 'DELETE',
-                    });
+                    const response = await fetch(`/delete/${id}`, { method: 'DELETE' });
                     if (response.ok) {
                         alert('Note deleted successfully');
                         location.reload();
@@ -149,47 +236,10 @@
                         alert('Failed to delete note');
                     }
                 } catch (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred while deleting the note');
+                    alert('Error deleting note');
+                } finally {
+                    toggleSpinner(false);
                 }
-            }
-        }
-
-        // Smart Compose Feature Implementation
-        const contentTextarea = document.getElementById('content');
-        const suggestionElement = document.getElementById('smart-compose-suggestion');
-
-        let typingTimer;
-        const doneTypingInterval = 300; // ms
-
-        contentTextarea.addEventListener('input', function() {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(predictNextWords, doneTypingInterval);
-        });
-
-        contentTextarea.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab' && suggestionElement.textContent) {
-                e.preventDefault();
-                contentTextarea.value += suggestionElement.textContent;
-                suggestionElement.textContent = '';
-            }
-        });
-
-        async function predictNextWords() {
-            const content = contentTextarea.value;
-            const response = await fetch('/predict', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ content, next_words: 3 }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                suggestionElement.textContent = data.predicted_words.join(' ');
-                suggestionElement.style.left = `${contentTextarea.selectionStart * 8}px`; // Adjust based on font size
-                suggestionElement.style.top = `${contentTextarea.offsetHeight - 20}px`; // Adjust based on textarea height
             }
         }
     </script>

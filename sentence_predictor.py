@@ -22,9 +22,9 @@ class SentencePredictor:
             seed_text += ' ' + predicted_word
         return seed_text.split()[-next_words:]
 
-predictor = SentencePredictor('/Users/sanatankhemariya/Downloads/easy-notes-main/sentence_predictor.h5', '/Users/sanatankhemariya/Downloads/easy-notes-main/tokenizer.pkl')
+predictor = SentencePredictor('/Users/sanatankhemariya/Desktop/easy-notes-main/sentence_predictor.h5', '/Users/sanatankhemariya/Desktop/easy-notes-main/tokenizer.pkl')
 
-test_sentence = "Machine learning models"
+test_sentence = "it is way of"
 predicted_words = predictor.predict_next_words(test_sentence, next_words=3)
 print(f"Input: {test_sentence}")
 print(f"Predicted words: {predicted_words}")
