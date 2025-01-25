@@ -3,3 +3,6 @@ node_modules/
 .venv/
 /.venv
 /node_modules
+english_to_hindi_translator/
+sentence_predictor.h5
+tokenizer.pkl

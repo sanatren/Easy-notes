@@ -5,6 +5,7 @@ from config.db import supa
 from models.note import Note
 import uuid
 import logging
+from translator import translate_text
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -112,4 +113,20 @@ async def predict_next_words(request: Request):
         return JSONResponse(content={"predicted_words": predicted_words})
     except Exception as e:
         print(f"Error in predict_next_words: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@note.post("/translate")
+async def translate_note_content(request: Request):
+    try:
+        data = await request.json()
+        content = data.get("content")
+
+        if not content:
+            raise HTTPException(status_code=400, detail="Content cannot be empty")
+
+        translated_text = translate_text(content)
+        return JSONResponse(content={"translated_text": translated_text})
+    except Exception as e:
+        print(f"Error in translate_note_content: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
