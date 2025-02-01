@@ -1,4 +1,4 @@
-# An Simple Notes app AI and Ml features .
+# An Simple Notes app AI and ML features .
 #still working on this.....
 
 #last update : language translator.
