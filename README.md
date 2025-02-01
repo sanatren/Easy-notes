@@ -1,4 +1,4 @@
-# An Simple Notes app with NLP and deep learning features .
+# An Simple Notes app AI and Ml features .
 #still working on this.....
 
 #last update : language translator.
