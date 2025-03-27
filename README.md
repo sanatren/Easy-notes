@@ -1,4 +1,4 @@
-# Easy-Peasy Notes 📝
+# Easy Notes 
 Overview
 Easy-Peasy Notes is a full-stack web application built with FastAPI and Bootstrap, designed to help users create, manage, and enhance their note-taking experience with smart features.
 
@@ -10,13 +10,13 @@ Create, read, update, and delete notes
 Mark notes as important
 Responsive design with Bootstrap
 
- Smart Composition 🧠
+ Smart Composition 
 
 AI-powered next word prediction
 Suggests the next 3 words while typing
 Tab key integration for quick word completion
 
-Translation Capabilities 🌐
+Translation Capabilities 
 
 Instant English to Hindi translation
 Translate note content with a single click
