@@ -164,7 +164,6 @@ The application uses Supabase as its database backend. The database schema inclu
 - Dark mode support
 
 ## Contributors
-- Your Name (@yourusername)
+- Your Name (@sanatren)
 
-## License
-[MIT License](LICENSE)
+
