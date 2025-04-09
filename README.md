@@ -164,6 +164,6 @@ The application uses Supabase as its database backend. The database schema inclu
 - Dark mode support
 
 ## Contributors
-- Your Name (@[sanatren](https://github.com/sanatren/))
+-  (@[sanatren](https://github.com/sanatren/))
 
 
